@@ -16,8 +16,8 @@
     "npm-publish-stream": "*",
     "npm-maintainers-au": "*",
     "delayed": "*",
-    "through2": "*"
+    "through2": "*",
+    "request": "~2.27.0"
   },
   "private": true
 }
-

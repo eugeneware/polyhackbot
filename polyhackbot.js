@@ -5,14 +5,16 @@ const jerk             = require('jerk')
     , tweet            = require('./tweet')
     , troller          = require('./troller')
     , npm              = require('./npm')
+    , polyhub          = require('./polyhub')
     , secrets          = require('./secrets')
     , options          = require('./options')
 
 var handlers  = [
-        { on: /bogan/i            , fn: onBogan }
-      , { on: /^!tweet /          , fn: tweet.onTweet.bind(null, options) }
-      , { on: /^.*$/              , fn: troller.bind(null, options) }
-      , { on: /polyhack|nodejsau/i, fn: troller.onKeyword.bind(null, options) }
+        { on: /bogan/i                     , fn: onBogan }
+      , { on: /^!tweet /                   , fn: tweet.onTweet.bind(null, options) }
+      , { on: /^.*$/                       , fn: troller.bind(null, options) }
+      , { on: /polyhack|nodejsau/i         , fn: troller.onKeyword.bind(null, options) }
+      , { on: /^polyhub\s+(.*?)\s+(.*)$/i  , fn: polyhub }
     ]
 
 function onBogan (message) {
