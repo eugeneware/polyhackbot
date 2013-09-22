@@ -1,5 +1,6 @@
-var serverURL = 'http://192.168.1.4:8080/';
+var serverURL = 'https://54.252.227.126/s/';
 var request = require('request');
+var secrets = require('./secrets').polyhub;
 
 function invalidCmd(msg, cmd, payload) {
   msg.say(msg.user + ': Invalid polyhub command ' + cmd)
@@ -17,7 +18,7 @@ handlers.echo = function (msg, cmd, payload) {
 };
 
 // get url
-handlers.get = function (msg, cmd, payload) {
+handlers.get = function (msg, cmd, payloa) {
   request.get(payload, function (err, res, body) {
     if (err) return errmsg(err, msg, cmd, payload);
     msg.say(msg.user + ': Your results:\n' + body)
@@ -26,16 +27,42 @@ handlers.get = function (msg, cmd, payload) {
 
 // register moniker data
 handlers.register = function (msg, cmd, payload) {
-request.post({
   var parts = payload.split(' ');
-  url: serverURL +
-       'members?moniker=' + parts[0] + 
-       '&data=' + JSON.stringify(parts[1])
-  },
-  function (err, res, body) {
-    if (err) return errmsg(err, msg, cmd, payload);
-    msg.say(msg.user + ': Your results:\n' + body)
-  });
+  console.log('payload', parts);
+  request.post({
+      auth: {
+        user: secrets.user,
+        pass: secrets.pass
+      },
+      url: serverURL +
+           'members?moniker=' + parts[0] +
+           '&data=' + JSON.stringify(parts[1]),
+      strictSSL: false
+    },
+    function (err, res, body) {
+      if (err) return errmsg(err, msg, cmd, payload);
+      msg.say(msg.user + ': Your results:\n' + body)
+    });
+};
+
+// register moniker data
+handlers.update = function (msg, cmd, payload) {
+  var parts = payload.split(' ');
+  console.log('payload', parts);
+  request.post({
+      auth: {
+        user: secrets.user,
+        pass: secrets.pass
+      },
+      url: serverURL +
+           'members/' + parts[0] +
+           '?data=' + JSON.stringify(parts[1]),
+      strictSSL: false
+    },
+    function (err, res, body) {
+      if (err) return errmsg(err, msg, cmd, payload);
+      msg.say(msg.user + ': Your results:\n' + body)
+    });
 };
 
 module.exports = function (msg) {
